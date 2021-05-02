@@ -1,4 +1,4 @@
-package CH11_NIO;
+package CH11_NIO.chargen;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -12,6 +12,9 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * 논블록 문자 발생기 서버
+ */
 public class ChargenServer {
     public static int DEFAULT_PORT = 9099;
 
@@ -101,12 +104,14 @@ public class ChargenServer {
                         // 버퍼에 아직 쓰지 않은 데이터가 남아 있는지 확인하기 위해 hasRemaining 을 호출해준다.
                         // 남아 있는 데이터가 있는 경우 출력하고,
                         // 남아 있는 데이터가 없는 경우, 회전하는 배열에 있는 데이터의 다음 줄로 버퍼를 채우고 채워진 버퍼를 쓴다.
+                        // 여기서 아직 쓰지 않는 데이터를 buffer에서 제공하는 메소드의 식으로 나타내면,
+                        // ( buffer.limit() - buffer.position() > 0 ) 인 경우를 의미한다.
                         if (!buffer.hasRemaining()) {
                             // 버퍼의 position 을 1로 바꾼다. (이전에 보낸 줄의 시작 문자를 구하기 위해서..)
                             buffer.rewind();
                             // 이전에 보낸 줄의 시작 문자를 구한다. (이때 position 이 +1 증가한다.)
                             int first = buffer.get();
-                            // 버퍼의 데이터를 변경할 준비를 한다. (position 을 1로 다시 바꾼다.)
+                            // 버퍼의 데이터를 변경할 준비를 한다. (position 을 1로 다시 바꾼다. buffer.clear() 를 호출해도 된다.)
                             buffer.rewind();
                             // rotation 에서 새로운 시작 문자의 위치를 찾는다. (이전 시작 문자의 다음 문자가 된다. - 한칸 rotation)
                             int position = first - ' ' + 1;
@@ -115,7 +120,9 @@ public class ChargenServer {
                             // 버퍼의 마지막에 라인 구분자를 저장한다.
                             buffer.put((byte) '\r');
                             buffer.put((byte) '\n');
-                            // 버퍼를 출력할 준비를 한다.
+                            // 버퍼를 출력할 준비를 한다. (쓰기 모드에서 읽기모드로 전환한다.)
+                            // 한도를 현재 위치로 설정하고 위치를 0으로 설정한다. -> 즉 현재 buffer 에서 데이터가 쓰여진 범위를 보여준다.
+                            // http://tutorials.jenkov.com/java-nio/buffers.html (flip() 부분 참조)
                             buffer.flip();
                         }
 

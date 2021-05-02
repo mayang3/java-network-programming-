@@ -1,4 +1,4 @@
-package CH11_NIO;
+package CH11_NIO.chargen;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -8,6 +8,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 
+/**
+ * 논블록 문자 발생기 클라이언트
+ */
 public class ChargenClient {
 
     public static int DEFAULT_PORT = 9099;
