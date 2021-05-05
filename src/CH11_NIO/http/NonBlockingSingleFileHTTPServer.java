@@ -70,8 +70,18 @@ public class NonBlockingSingleFileHTTPServer {
                         SocketChannel channel = (SocketChannel) key.channel();
                         ByteBuffer buffer = ByteBuffer.allocate(4096);
                         channel.read(buffer);
+
+                        // flip 을 실행해주면 position~limit 이 데이터가 있는 범위가 된다.
+                        buffer.flip();
+                        byte [] bytes = new byte[buffer.limit()];
+                        buffer.get(bytes);
+
+                        System.out.println("Headers : [" + new String(bytes) + "]");
+
                         // 채널을 쓰기만 가능하도록 전환한다.
                         key.interestOps(SelectionKey.OP_WRITE);
+                        // 서버 로드시 가져왔던 파일의 버퍼를 복사한다.
+                        // 동일한 정보를 둘 이상의 채널에 전송하기 위해서는 버퍼를 복사해야 하는데, duplicate 메소드가 이러한 일을 한다.
                         key.attach(contentBuffer.duplicate());
                     }
                 } catch (IOException ex) {
