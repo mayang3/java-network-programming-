@@ -69,7 +69,7 @@ public class EchoServer {
                         client.configureBlocking(false);
                         SelectionKey clientKey = client.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ);
                         // 버퍼는 말 그대로 버퍼이다. 데이터의 총 길이를 의미하지 않는다.
-                        // 버퍼의 크기를 1로 설정했다고, 데이터 바이트의 길이가 최대 1인 데이터만 허용한다는 뜻은 아니라는 이야기이다.
+                        // 버퍼의 크기를 1로 설정했다고, 데이터 바이트의 길이가 최대 1인 데이터만 허용한다는 뜻은 아니라는 이야기이다. ?
                         ByteBuffer buffer = ByteBuffer.allocate(10);
                         clientKey.attach(buffer);
                     }
