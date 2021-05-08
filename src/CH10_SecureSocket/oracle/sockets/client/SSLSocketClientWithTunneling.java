@@ -162,7 +162,8 @@ public class SSLSocketClientWithTunneling {
 	OutputStream out = tunnel.getOutputStream();
 	String msg = "CONNECT " + host + ":" + port + " HTTP/1.0\n"
 		     + "User-Agent: "
-		     + sun.net.www.protocol.http.HttpURLConnection.userAgent
+//		     + sun.net.www.protocol.http.HttpURLConnection.userAgent
+			 + ""
 		     + "\r\n\r\n";
 	byte b[];
 	try {
