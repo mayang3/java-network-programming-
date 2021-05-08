@@ -36,10 +36,8 @@ public class NonBlockingSingleFileHTTPServer {
 
     public void run() throws IOException {
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
-        ServerSocket serverSocket = serverChannel.socket();
+        serverChannel.bind(new InetSocketAddress(port));
         Selector selector = Selector.open();
-        InetSocketAddress localPort = new InetSocketAddress(port);
-        serverSocket.bind(localPort);
         serverChannel.configureBlocking(false);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
@@ -68,7 +66,7 @@ public class NonBlockingSingleFileHTTPServer {
                     } else if (key.isReadable()) {
                         // HTTP 헤더는 분석하지 않고 읽기만 한다.
                         SocketChannel channel = (SocketChannel) key.channel();
-                        ByteBuffer buffer = ByteBuffer.allocate(4096);
+                        ByteBuffer buffer = ByteBuffer.allocate(5);
                         channel.read(buffer);
 
                         // flip 을 실행해주면 position~limit 이 데이터가 있는 범위가 된다.
@@ -86,8 +84,8 @@ public class NonBlockingSingleFileHTTPServer {
                     }
                 } catch (IOException ex) {
                     key.cancel();
-
                     try {
+
                         key.channel().close();
                     } catch (IOException cex) {}
                 }
